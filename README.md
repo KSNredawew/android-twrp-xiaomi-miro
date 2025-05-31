@@ -11,5 +11,5 @@ Unofficial TWRP recovery for POCO F7 Ultra / Redmi K80 Pro (codename: **miro**).
 
 ### Fastboot Method
 ```bash
-fastboot flash vendor_boot_ab twrp_miro.img
+fastboot flash recovery_ab twrp_miro.img
 fastboot reboot recovery
