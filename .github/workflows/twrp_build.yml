@@ -1,9 +1,10 @@
-name: Build TWRP for miro
+name: Build and Release TWRP for miro
 
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    tags:
+      - 'v*'
 
 jobs:
   build:
@@ -44,7 +45,7 @@ jobs:
 
     - name: Clone device tree
       run: |
-        git clone https://github.com/yourusername/device_xiaomi_miro.git device/xiaomi/miro
+        git clone https://github.com/KSNredawew/android-twrp-xiaomi-miro.git device/xiaomi/miro
         cd device/xiaomi/miro
         git pull origin main
 
@@ -55,8 +56,24 @@ jobs:
         lunch twrp_miro-eng
         mka recoveryimage
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
+    - name: Create release version
+      id: version
+      run: |
+        echo "TWRP_VERSION=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
+        echo "RELEASE_TAG=$(date +'v%Y.%m.%d')" >> $GITHUB_ENV
+
+    - name: Zip recovery image
+      run: |
+        cd out/target/product/miro
+        zip -r twrp-${TWRP_VERSION}-miro.zip recovery.img
+        echo "ASSET_PATH=$(pwd)/twrp-${TWRP_VERSION}-miro.zip" >> $GITHUB_ENV
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
       with:
-        name: twrp-miro-recovery
-        path: out/target/product/miro/recovery.img
+        tag_name: ${{ env.RELEASE_TAG }}
+        name: "TWRP ${{ env.TWRP_VERSION }} for miro"
+        body: "Unofficial TWRP for POCO F7 Ultra / Redmi K80 Pro (miro)"
+        files: ${{ env.ASSET_PATH }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
