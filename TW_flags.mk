@@ -57,7 +57,7 @@ TW_EXCLUDE_NANO := true
 TW_EXCLUDE_BASH := true
 
 # Custom
-TW_DEVICE_VERSION := "Ultra_Rev1.0 by YourName"
+TW_DEVICE_VERSION := "Ultra_Rev1.0 by KSN"
 TW_DELAY_TOUCH_INIT_MS := 2000
 TW_Y_OFFSET := 80
 TW_H_OFFSET := -80
